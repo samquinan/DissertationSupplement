@@ -1,0 +1,123 @@
+Description:
+
+The supplemental materials for Visually Comparing Weather Features in forecasts include: a video overview of WeaVER, our prototype tool, illustrating it's various interactive mechanisms; the sources which we used to derive the meteorological conventions which were integrated into our informed, default encoding recommendations; and an overview of the design process for WeaVER, featuring early sketches, paper prototypes and early digital prototypes (including source code and test data).
+
+The video overview is a standalone file (m4v). The materials for the meteorological sources and design overview have been placed in separate directories along with a respective .htm file. The .htm file acts as a wrapper, providing context / description for all the other materials within the directory.
+
+
+Size:
+
+The total file size for all supplemental materials is 83.1 MB
+
+
+Platform / Environment:
+
+All of the included files should be platform / environment independent; the runnable digital prototypes, however, have only been tested on Mac and Linux.
+
+
+Player Information: 
+
+In order to view the associated video file, a video player which handles .m4v / .mp4 files will be required. The video has been verified as playable in both Quicktime 10.2 and VLC 2.0.6 (http://www.videolan.org/vlc/index.html).
+
+Running the digital prototypes will require Processing 2.2.1 (https://processing.org/). While the code may run in other versions of Processing, we have not tested them in those other versions. Similarly, while the code should run on Windows due to the cross-platform nature of processing, we have only tested the code on Mac and Linux Platforms.
+
+
+Detailed Run Instructions:
+
+Instructions on how to run the digital prototypes have been included in design/design.htm
+
+
+Major Component Description:
+
+./ :
+README
+SUMMARY
+overview.m4v
+design/				
+msource/
+
+./design :
+design/design.htm
+design/demos/
+design/demos/dragdrop.tgz	
+design/demos/dualdemo.tgz	
+design/demos/isp.tgz		
+design/demos/spagplot.tgz
+design/images/
+design/images/cmaps/
+design/images/cmaps/apcp.png
+design/images/cmaps/haines.png		
+design/images/cmaps/mnsd.png
+design/images/cmaps/rh.png			
+design/images/cmaps/tmp.png
+design/images/cmaps/wind.png
+design/images/mockup/
+design/images/mockup/query02.png
+design/images/mockup/query03.png		
+design/images/mockup/query04.png
+design/images/mockup/query05.png		
+design/images/mockup/query06.png
+design/images/mockup/query07.png		
+design/images/mockup/query08.png
+design/images/mockup/query10.png	
+design/images/mockup/query11.png
+design/images/probchar/
+design/images/probchar/data.png	
+design/images/probchar/workflow.png
+design/images/sketch/
+design/images/sketch/design1.png	
+design/images/sketch/design2.png	
+design/images/sketch/sketch1.png	
+design/images/sketch/sketch2.png
+design/images/sketch/sketch3.png	
+design/images/sketch/sketch4.png
+
+./msource:
+msource/msource.htm
+msource/images/
+msource/images/01.png
+msource/images/02.png
+msource/images/03.png
+msource/images/04.png
+msource/images/05.png
+msource/images/06.png
+msource/images/07.png
+msource/images/08.gif
+msource/images/09.gif
+msource/images/10.gif
+msource/images/11.gif
+msource/images/12.gif
+msource/images/13.gif
+msource/images/14.gif
+msource/images/15.gif
+msource/images/16.gif
+msource/images/17.gif
+msource/images/18.gif
+msource/images/19.gif
+msource/images/20.gif
+msource/images/21.gif
+msource/images/22.gif
+msource/images/23.gif
+msource/images/24.gif
+msource/images/25.gif
+msource/images/26.gif
+msource/images/27.gif
+msource/images/28.gif
+msource/images/29.gif
+msource/images/30.gif
+msource/images/31.gif
+msource/images/32.gif
+msource/images/33.gif
+msource/images/34.gif
+msource/images/35.gif
+msource/images/36.gif
+msource/images/37.gif
+msource/images/38.gif
+msource/images/39.gif
+msource/images/40.gif
+msource/images/41.gif
+
+
+Contact Information:
+
+Questions and comments can be directed to Sam Quinan at psq@cs.utah.edu or samquinan@sci.utah.edu

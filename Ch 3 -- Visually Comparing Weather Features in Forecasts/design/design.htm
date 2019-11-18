@@ -1,0 +1,667 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Prototypes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+/*
+   This document has been created with Marked.app <http://marked2app.com>
+   Please leave this notice in place, along with any additional credits below.
+   ---------------------------------------------------------------
+   Title: Kult
+   Author: Peter Sziebig - @bigpe
+   Description: Easy to read
+*/
+
+@font-face {
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 300;
+    src: local("Ubuntu Light"), local("Ubuntu-Light"), url("http://themes.googleusercontent.com/static/fonts/ubuntu/v4/WtcvfJHWXKxx4x0kuS1kobO3LdcAZYWl9Si6vvxL-qU.woff") format("woff");
+}
+@font-face {
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Ubuntu"), url("http://themes.googleusercontent.com/static/fonts/ubuntu/v4/CGXpU_uR_FUfdeyCjAWgZ-vvDin1pK8aKteLpeZ5c0A.woff") format("woff");
+}
+@font-face {
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 500;
+    src: local("Ubuntu Medium"), local("Ubuntu-Medium"), url("http://themes.googleusercontent.com/static/fonts/ubuntu/v4/gMhvhm-nVj1086DvGgmzB7O3LdcAZYWl9Si6vvxL-qU.woff") format("woff");
+}
+@font-face {
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 700;
+    src: local("Ubuntu Bold"), local("Ubuntu-Bold"), url("http://themes.googleusercontent.com/static/fonts/ubuntu/v4/nsLtvfQoT-rVwGTHHnkeJrO3LdcAZYWl9Si6vvxL-qU.woff") format("woff");
+}
+@font-face {
+    font-family: "Ubuntu";
+    font-style: italic;
+    font-weight: 300;
+    src: local("Ubuntu Light Italic"), local("Ubuntu-LightItalic"), url("http://themes.googleusercontent.com/static/fonts/ubuntu/v4/DZ_YjBPqZ88vcZCcIXm6VqfTCPadK0KLfdEfFtGWCYw.woff") format("woff");
+}
+
+
+
+html {
+    font-size: 100%;
+}
+html, button, input, select, textarea {
+    font-family: sans-serif;
+}
+
+html, body, button, input, select, textarea {
+    color: #57534A;
+    font-family: "Ubuntu","Myriad Pro","Myriad",sans-serif;
+    font-size: 18px;
+	font-weight: 300;
+}
+
+body{
+    margin: 0 auto;
+    background-color: #FFFFFF;
+}
+
+body, textarea {
+    line-height: 1.4;
+}
+
+
+body:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+body {
+    padding-left: 6rem;
+    padding-right: 6rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 42rem;
+    display: block;
+}
+
+
+
+h1, h2, h3, dt {
+    color: #423F37;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+h2, .article-list .article-title {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+h3, dt {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+h6 {
+    font-size: 0.75em;
+    margin: 2.33em 0;
+}
+
+
+a {
+    color: #8DB359;
+    cursor: pointer;
+    outline: 0 none;
+    text-decoration: underline;
+}
+
+a:hover {
+    outline: 0 none;
+    color: #739544;
+}
+
+
+p, pre {
+    margin: 1em 0;
+}
+code, kbd, pre, samp {
+    font-family: monospace,serif;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+
+}
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+pre {
+    background-color: #F8F5F0;
+    font-size: 0.7rem;
+    overflow-x: auto;
+    padding: 1.3rem;
+    position: relative;
+    white-space: pre;
+    word-wrap: normal;
+}
+pre, code, kbd, samp {
+    margin: 0;
+}
+code, kbd, pre, samp {
+    font-family: monospace,serif;
+}
+
+code {
+    color: #423F37;
+}
+
+
+aside {
+    display: block;
+    float: right;
+    width: 390px;
+}
+
+
+b, strong {
+    font-weight: bold;
+    color: #423F37;
+    font-weight: 700;
+}
+
+blockquote {
+    color: #423F37;
+    font-size: 1.25em;
+    font-weight: 700;
+	margin: 1em 40px;
+}
+
+blockquote {
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+figure {
+	margin-left: -4.5rem;
+    margin-right: -4.5rem;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+
+hr {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #ECE6DA;
+    border-image: none;
+    border-style: none none solid;
+    border-width: medium medium 1px;
+    margin: 3em 6em;
+}
+
+
+img {
+    max-width: 100%;
+    display: block;
+    border: 0 none;
+}
+
+
+ol > li:before {
+    color: #423F37;
+    content: counter(ol, decimal) ".";
+    counter-increment: ol;
+    font-weight: 700;
+    margin-right: 0.333em;
+    position: absolute;
+    right: 100%;
+}
+
+ul > li:before {
+    background-color: #423F37;
+    border-radius: 14px 14px 14px 14px;
+    content: "";
+    height: 6px;
+    margin-right: 0.333em;
+    margin-top: 0.55em;
+    position: absolute;
+    right: 100%;
+    width: 6px;
+}
+
+ol, ul, dl {
+    margin-left: 2rem;
+    padding: 0;
+}
+ol {
+    counter-reset: ol;
+}
+li + li, dd + dt {
+    margin-top: 0.5em;
+}
+
+ul > li {
+    position: relative;
+}
+
+ol > li {
+    position: relative;
+}
+li {
+    list-style: none outside none;
+}
+
+
+figure > figcaption {
+    margin-top: 0.5em;
+}
+small, dd, figcaption {
+    color: #A19C91;
+    display: block;
+    font-size: 0.8rem;
+    font-style: italic;
+    line-height: 1.2;
+}
+
+
+tbody{display:table-row-group}
+tfoot{display:table-footer-group}
+table{margin-bottom:2em;font-size: 0.8em;padding:0;border-collapse:collapse;-webkit-box-shadow:1px 1px 2px rgba(0,0,0,.35);width:80%;margin:0 auto 2em auto}
+table th,table td{padding:10px 10px 9px;line-height:18px;text-align:left}
+table th{
+padding-top:9px;!important;text-transform:uppercase;vertical-align:middle}
+table td{vertical-align:top;border-top:1px solid #ddd;}
+table tbody th{border-top:1px solid #ddd;vertical-align:top}
+table{border:1px solid #ddd;border-collapse:separate;*border-collapse:collapse;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}
+table th+th,table td+td,table th+td{border-left:1px solid #ddd}
+table thead tr:first-child th:first-child,table tbody tr:first-child td:first-child{-webkit-border-radius:4px 0 0 0;-moz-border-radius:4px 0 0 0;border-radius:4px 0 0 0}
+table thead tr:first-child th:last-child,table tbody tr:first-child td:last-child{-webkit-border-radius:0 4px 0 0;-moz-border-radius:0 4px 0 0;border-radius:0 4px 0 0}
+table tbody tr:last-child td:first-child{-webkit-border-radius:0 0 0 4px;-moz-border-radius:0 0 0 4px;border-radius:0 0 0 4px}
+table tbody tr:last-child td:last-child{-webkit-border-radius:0 0 4px 0;-moz-border-radius:0 0 4px 0;border-radius:0 0 4px 0}
+tbody tr:nth-child(odd){background-color:rgba(0,0,0,0.03)}
+
+caption{display:table-caption;font-weight:300;font-size:1.3em;text-transform:uppercase;letter-spacing:2px;word-spacing:.2em;background:rgba(0,0,0,.75);color:#EEE;padding:4px;-webkit-border-radius:4px;margin:4px 0;-webkit-box-shadow:2px 2px 2px rgba(0,0,0,.35)}
+
+/* grey out placeholders */
+:-moz-placeholder {
+  color: #bfbfbf;
+}
+::-webkit-input-placeholder {
+  color: #bfbfbf;
+}
+
+
+.article-date {
+    color: #C7C2B8;
+    display: block;
+    font-size: 0.8rem;
+}
+
+
+@media print{
+#generated-toc-clone,#generated-toc{display:none!important}
+}
+#generated-toc-clone li.missing,#mkreplaced-toc li.missing{list-style-type:none!important}#generated-toc-clone li, #mkreplaced-toc li{list-style-type:upper-roman}#generated-toc-clone li li, #mkreplaced-toc li li{list-style-type:decimal}#generated-toc-clone li li li,#mkreplaced-toc li li li{list-style-type:decimal-leading-zero}#generated-toc-clone li li li li,#mkreplaced-toc li li li li{list-style-type:lower-greek}#generated-toc-clone li li li li li,#mkreplaced-toc li li li li li{list-style-type:disc}#generated-toc-clone li li li li li li,#mkreplaced-toc li li li li li li{list-style-type:square}
+.custom_wrap {
+    margin-top:		0;
+    text-indent:	       0; 
+    max-width:		40em;
+}
+
+
+</style>
+
+</head>
+<body class="normal poetry">
+  <div id="wrapper">
+      <h2 id="weaverdesignoverview">WeaVER Design Overview</h2>
+
+<h3 id="domaincharacterization">Domain Characterization</h3>
+
+<p>These were the early versions of our data and task abstractions upon which much of our early prototyping was based. Throughout the prototyping process, these characterizations were updated and refined to what we presented in our paper. Including the early versions here is important, however, to provide context to certain aspects of our design process. </p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">This was an early formulation of our data abstraction. The elements shown here did not change significantly over the course of our design process, though we did add to this abstraction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/probchar/data.png"><img src="images/probchar/data.png" alt="data" id="data" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">This graphic contains the early characterization of the workflows of our collaborators in wildfire emergency management. Notably, this contains a feature we were initially interested in including, but wound up abandoning. Our collaborators were interested in being able to view past forecasts to determine what changed and how those developments did or did not match their expectations. To this end we initially developed the idea of including an integrated way to track features and issues across developing forecasts. Users would be able to set <strong>watchpoints</strong> on given field and time and be able to track changes over various model runs. The notion of watchpoints were abandoned early in the digital prototyping phase due to the data scope being too far beyond what we were prepared to handle. That said, you will see watchpoints mentioned extensively in our early design iterations.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/probchar/workflow.png"><img src="images/probchar/workflow.png" alt="workflow" id="workflow" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="sketch-basedparallelprototyping">Sketch-Based Parallel Prototyping</h3>
+
+<p>As described in the paper, after our initial domain characterization was complete, we moved on to a prototyping phase that began with internal parallel prototyping. This is an overview of that stage of the process.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">The following sketches represent the various ideas and configurations explored during at the beginning of our parallel prototyping session. We apologize for the fact that these are hard to read; they were created using blue pencil and this is the clearest we could get the scans.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/sketch/sketch1.png"><img src="images/sketch/sketch1.png" alt="sketch1" id="sketch1" style="width:350px;" /></a><a href="images/sketch/sketch2.png"><img src="images/sketch/sketch2.png" alt="sketch2" id="sketch2" style="width:350px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">These sketches contain various ideas on how to deal with low-level design elements: how fields would be specified, how users might specify different encodings, change iso-values, etc.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/sketch/sketch3.png"><img src="images/sketch/sketch3.png" alt="sketch3" id="sketch3" style="width:700px;" /></a><a href="images/sketch/sketch4.png"><img src="images/sketch/sketch4.png" alt="sketch4" id="sketch4" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">The following two images show our two initial fleshed out parallel designs. The general look and feel of WeaVER was derived heavily from the first design, though the second includes certain ideas, such as tabs, which were also integrated into our paper prototype.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/sketch/design1.png"><img src="images/sketch/design1.png" alt="design1" id="design1" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/sketch/design2.png"><img src="images/sketch/design2.png" alt="design2" id="design2" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="paperprototype">Paper Prototype</h3>
+
+<p>The design ideas from our parallel prototyping session were evaluated, fleshed out, and integrated into the following paper prototype which was presented to our collaborators for feedback. This paper prototype for the application includes several elements which were later abandoned when we realized that data and processing requirements were well beyond that of the consumer desktops available to our collaborators. These elements include the aforementioned watchpoints, along with the ability to swap out and historically view changes between forecast runs; a single integrated query library, which handled the all data derivations in a single interface and provided users the ability to interactively change the data derivations; and the ability to switch between overlays and a quad-view based on user preference. The question of how to encode the various different queries eventually lead us to the notion of <strong>informed defaults</strong> presented in the paper. While direct support for inter-forecast comparisons was eventually abandoned, our collaborator&#8217;s feedback regarding the general idea of enabling better direct comparisons is what lead to our work on enabling direct comparisons of multiple features across an ensemble. </p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">The main view.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query02.png"><img src="images/mockup/query02.png" alt="paper2" id="paper2" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query03.png"><img src="images/mockup/query03.png" alt="paper3" id="paper3" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Various iterations on a historical view for comparing data across forecast runs. The first is based on a notion of cover-flow and allows users to evaluate general changes across a series of runs. The second would allow users to compare two runs side by side. The third design would allow the user to switch back and forth between either of the runs along with the difference between those runs.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query04.png"><img src="images/mockup/query04.png" alt="paper4" id="paper4" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query05.png"><img src="images/mockup/query05.png" alt="paper5" id="paper5" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query06.png"><img src="images/mockup/query06.png" alt="paper6" id="paper6" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">An illustration of a drag-drop mechanism for building various queries. The notion of a unified query library was eventually abandoned due to developments in our understanding of the data and task abstractions. Additionally, because much of what is illustrated here requires significant data processing, we eventually integrated certain aspects of this into our preprocessing routines.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query07.png"><img src="images/mockup/query07.png" alt="paper7" id="paper7" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query08.png"><img src="images/mockup/query08.png" alt="paper8" id="paper8" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query10.png"><img src="images/mockup/query10.png" alt="paper10" id="paper10" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/mockup/query11.png"><img src="images/mockup/query11.png" alt="paper11" id="paper11" style="width:700px;" /></a></center></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="digitalprototypes">Digital Prototypes</h3>
+
+<p>Based on the feedback that we received on our paper prototype, we pivoted our designs toward the notions of informed defaults and directly visualizing multiple features across ensembles. We developed separate digital prototypes for both these ideas. Here we include 2 iterations or each &#8211; an early version, and a late version. We are making runnable demos containing both source code and data available; they can be found in the &#8220;demos&#8221; folder included as part of this archive. </p>
+
+<p>The demos are standalone <a href="https://processing.org/">Processing</a> sketch archives. To run, first ensure Processing 2.2.1 is installed. The code may still run in other versions of Processing, but there are no guarantees. Download and unpack the archive for the demo you are interested in. Open the unarchived sketch folder in Processing, and hit the play button in the upper left hand corner of the Processing window.</p>
+
+<h4 id="informeddefaults">Informed Defaults</h4>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">An early test of the drag-drop encoding mechanism with early iterations of informed default conventions for temperature and relative humidity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/digital/dragdrop.png"><img src="images/digital/dragdrop.png" alt="digital1" id="digital1" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center>Archive: <a href="demos/dragdrop.tgz">dragdrop.tgz</a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">A simplified demo of the prototype interface eventually presented to our collaborators. The demo includes a full data run for temperature.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/digital/dualdemo.png"><img src="images/digital/dualdemo.png" alt="digital2" id="digital2" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center>Archive: <a href="demos/dualdemo.tgz">dualdemo.tgz</a></center></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="ensemblesoffeatures">Ensembles of Features</h4>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">An early iteration of interactive spaghetti plots. Providing users with interactive sliders was a part our original design that we eventually backed off of. This was due to the fact that we could not replicate the behavior for the interactive contour box plots; we were unable to generate the contour box plots at interactive rates on consumer hardware.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/digital/spagplot.png"><img src="images/digital/spagplot.png" alt="digital3" id="digital3" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center>Archive: <a href="demos/spagplot.tgz">spagplot.tgz</a></center></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">The final prototype for interactive spaghetti plots and interactive contour box plots, which we presented to collaborators.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/digital/isp.png"><img src="images/digital/isp.png" alt="digital4" id="digital4" style="width:700px;" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center>Archive: <a href="demos/isp.tgz">iSP.tgz</a></center></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="colormapdevelopment">Color Map Development</h2>
+
+<p>In the paper we mention the fact that we hand-tweaked our color maps. Here, we explain what exactly we did and why. Our choice to use HSV space means that changing hue and saturation still have an effect on the luminance output. This is what we attempted to account for in hand-tweaking our color maps. In each of the following images the procedurally generated map is on the left and the hand-tweaked map is on the right. Upon cursory examination the color maps look very similar, but difference become more evident as one looks at the underlying luminance. We have included the corresponding luminance map next to each color map in order to help illustrate this point. <em>As a note to the reader, we have left the categorical Haines index color map out of this discussion intentionally, as it was initially designed by hand.</em></p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><center><strong>Temperature</strong></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/colormaps/tmp.png"><img src="images/cmaps/tmp.png" alt="cmap1" id="cmap1" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Note the luminance differences at the low end of the scale. The new color map (<em>right side</em>) has been tweaked to increase visual separation of the bottom three blues.</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><center><strong>MNSD</strong></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/colormaps/mnsd.png"><img src="images/cmaps/mnsd.png" alt="cmap2" id="cmap2" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;">The new color map (<em>right side</em>) was tweaked to create more pronounced luminance differences at several positions. The most pronounced examples are between the second and third darkest colors and the two lightest colors.</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><center><strong>RH</strong></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/colormaps/rh.png"><img src="images/cmaps/rh.png" alt="cmap3" id="cmap3" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;">The new color map (<em>right side</em>) was tweaked to have a larger luminance step.</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><center><strong>APCP</strong></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/colormaps/apcp.png"><img src="images/cmaps/apcp.png" alt="cmap4" id="cmap4" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;">The new color map (<em>right side</em>) tweaks both the darkest and lightest colors, leaving the mid-range colors intact.</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><center><strong>WIND</strong></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><center><a href="images/colormaps/wind.png"><img src="images/cmaps/wind.png" alt="cmap5" id="cmap5" /></a></center></td>
+</tr>
+<tr>
+	<td style="text-align:left;">The new color map (<em>right side</em>) tweaks the yellow color and the shades to either side of it. The diverging nature of luminance in this color map is intentional as 100 knots (which corresponds to yellow in our color map) is considered a critical boundary point for judgments involving wind speed.</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- ##END MARKED WRAPPER## -->
+    </div>
+</body>
+</html>

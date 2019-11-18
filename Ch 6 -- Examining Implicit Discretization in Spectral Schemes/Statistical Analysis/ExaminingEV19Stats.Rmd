@@ -1,0 +1,187 @@
+---
+title: 'Descriptive Statistical Analysis for "Examining Implicit Discretization in Spectral Schemes"'
+author: "P. Samuel Quinan, Lace M.K. Padilla, Sarah Creem-Regehr, Miriah Meyer"
+date: "March 11th, 2019"
+output:
+  html_document:
+    highlight: pygments
+    theme: yeti
+    toc: yes
+    toc_float: true
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, echo=FALSE, warning=FALSE, message=FALSE)
+
+#load packages 
+library(reshape2)
+library(plyr)
+library(ez)
+library(afex)
+library(tidyverse)
+library(kableExtra)
+
+
+```
+
+```{r import data, include=FALSE}
+#load data
+#boundary wording condition, see Section 4 "Methods & Aims"" for details
+boundary<- read.csv("../Experimental Data/boundaryDerived.csv", header = TRUE)
+#category wording condition
+category<- read.csv("../Experimental Data/categoryDerived.csv", header = TRUE)
+```
+
+```{r means, SDs, outliers, include=FALSE}
+
+#calculating grand mean per person for delineations that were placed
+boundary$grand_mean_placed <- rowMeans(boundary[,c(6,8,10,12,14,16,18,20,22,24,26,28)]) 
+category$grand_mean_placed <- rowMeans(category[,c(6,8,10,12,14,16,18,20,22,24,26,28)]) 
+
+#calculating grand mean for the number of delineations particpent reported they saw 
+boundary$grand_mean_counted <- rowMeans(boundary[,c(5,7,9,11,13,15,17,19,21,23,25,27)]) 
+category$grand_mean_counted <- rowMeans(category[,c(5,7,9,11,13,15,17,19,21,23,25,27)]) 
+
+#coding outliers
+boundary$outlier<- ifelse(boundary$grand_mean_placed > sd(boundary$grand_mean_placed)*2+mean(boundary$grand_mean_placed), "1", "0") 
+
+category$outlier<- ifelse(category$grand_mean_placed > sd(category$grand_mean_placed)*2+mean(category$grand_mean_placed), "1", "0") 
+
+#removing outliers 
+boundary_clean<- boundary[!(boundary$outlier=="1"),] 
+category_clean<- category[!(category$outlier=="1"),] 
+```
+
+```{r concatenating datasets, include=FALSE}
+
+#adding identifier for boundary and category
+boundary_clean$wording <- "boundary"
+category_clean$wording <- "category"
+
+#concatenating dataset
+total<- rbind(boundary_clean, category_clean)
+
+#reformating the data from wide to long for analysis 
+total.long <- melt(total,
+                   id.vars=c(1:4, 29:30,32),
+                   # The source columns
+                   measure.vars=c(5:28),
+                   variable.name = "cmap", 
+                   value.name = "num_color_categories"
+)
+
+#breaking up row identifiers 
+total.longV2<- cbind(total.long[1:4|7],colsplit(total.long$cmap, "_", names=c("color", "data", "response")))
+```
+
+#Mixed model
+```{r multilevel  stats, echo=FALSE, message=FALSE}
+#making grey the referant 
+total.longV2$colorDM<- ifelse(total.longV2$color =="gray", "1gray", total.longV2$color)
+
+#making gray the referant 
+total.longV2$dataDM<- ifelse(total.longV2$data =="complex", "0complex", total.longV2$data)
+
+model<- lmer(num_color_categories ~ colorDM*dataDM + wording*response  + (1|UUID), total.longV2, REML = TRUE)
+
+coefs <- data.frame(coef(summary(model)))
+# use normal distribution to approximate p-value
+coefs$p.z <- 2 * (1 - pnorm(abs(coefs$t.value)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Main Effect Means
+
+```{r multilevel means, echo=FALSE, message=FALSE}
+# calcuate means by color
+table_color<- ddply(total.longV2,~color,summarise,mean=mean(num_color_categories),sd=sd(num_color_categories))
+
+# generate table
+knitr::kable(table_color, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+# calcuate means by data
+table_data<- ddply(total.longV2,~data,summarise,mean=mean(num_color_categories),sd=sd(num_color_categories))
+# generate table
+knitr::kable(table_data, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+### Color*Data Plot
+
+```{r multilevel interaction, echo=FALSE, message=TRUE}
+# calcuate means by color * data
+table_interaction<-ddply(total.longV2,.(data,color),summarise,mean=mean(num_color_categories),sd=sd(num_color_categories), error95CI=qnorm(0.975)*sd(num_color_categories)/sqrt(length(num_color_categories)))
+#plot
+plot <- ggplot(table_interaction, aes(x=color, y=mean, fill=data, group=data)) +
+geom_bar(stat="identity", position=position_dodge(.82), width=0.8, color="#FEFEFE") +
+scale_fill_manual(name="",values=c('#0E6089', '#992B65', '#5E50A3'), labels=c("1D","2D","Complex")) +
+geom_errorbar(aes(ymin=mean-error95CI, ymax=mean+error95CI), width=.24, position=position_dodge(.82), color="#3F3F3F")+
+scale_y_continuous(name ="Number of Boundaries/Categories", breaks=c(0,2,4,6,8))+
+scale_x_discrete(name ="Color (means + 95% confidence intervals)", labels=c("gray" = "Grayscale", "default" = "Traditional", "jet" = "Jet", "kindlmann" = "Kindlmann"), limits=c("default","jet", "kindlmann","gray"))+
+theme(legend.position="bottom")
+print(plot)
+```
+
+#Post-hoc model Gray
+```{r post-hoc model gray stats, echo=FALSE, message=FALSE}
+#breaking down the interaction, just looking at grey first
+total.longGray <- total.longV2[ which(total.longV2$color=="gray"), ]
+
+model<- lmer(num_color_categories ~ dataDM + wording*response  + (1|UUID), total.longGray)
+#summary(model)
+coefs <- data.frame(coef(summary(model)))
+# use normal distribution to approximate p-value
+coefs$p.z <- 2 * (1 - pnorm(abs(coefs$t.value)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+table<- ddply(total.longGray,~data,summarise,mean=mean(num_color_categories),sd=sd(num_color_categories))
+knitr::kable(table, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+#Post-hoc model Jet
+```{r post-hoc model jet  stats, echo=FALSE, message=FALSE}
+#breaking down the interaction just looking at Jet 
+total.longJet <- total.longV2[ which(total.longV2$color=="jet"), ]
+
+model<- lmer(num_color_categories ~ dataDM + wording*response  + (1|UUID), total.longJet)
+#summary(model)
+coefs <- data.frame(coef(summary(model)))
+# use normal distribution to approximate p-value
+coefs$p.z <- 2 * (1 - pnorm(abs(coefs$t.value)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+table<- ddply(total.longJet,~data,summarise,mean=mean(num_color_categories),sd=sd(num_color_categories))
+knitr::kable(table, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+```
+
+#Post-hoc model Kindlmann
+```{r post-hoc model kindlmann  stats, echo=FALSE, message=FALSE}
+#braking down the interaction just looking at Kindlmann
+total.longJKind <- total.longV2[ which(total.longV2$color=="kindlmann"), ]
+
+model<- lmer(num_color_categories ~ dataDM + wording*response  + (1|UUID), total.longJKind)
+#summary(model)
+coefs <- data.frame(coef(summary(model)))
+# use normal distribution to approximate p-value
+coefs$p.z <- 2 * (1 - pnorm(abs(coefs$t.value)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+table<- ddply(total.longJKind,~data,summarise,mean=mean(num_color_categories),sd=sd(num_color_categories))
+knitr::kable(table, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+```
+

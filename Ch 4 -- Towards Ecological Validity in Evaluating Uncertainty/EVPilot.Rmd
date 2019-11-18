@@ -1,0 +1,183 @@
+---
+title: 'Ecological Validity Pilot Study -- Analysis'
+author: "P. Samuel Quinan, Lace M.K. Padilla, Sarah Creem-Regher, Miriah Meyer"
+date: "11/7/2019"
+output:
+  html_document:
+    highlight: pygments
+    theme: yeti
+    toc: yes
+    toc_float: true
+    code_folding: show
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#load packages 
+require(tidyverse)
+require(dplyr)
+require(plyr)
+require(lmerTest)
+require(lubridate)
+require(ez)
+require(kableExtra)
+```
+
+#### Data Processing
+```{r data.processing, echo=TRUE}
+# import raw file
+raw <- read.csv(file="Forecasting_anonymized.csv", head=TRUE, sep=",")
+
+# subset for analysis
+subset <- raw[,c("EndDate","forecaster", "Product", 
+                 "day_1_nErr", "day_1_kErr", "day_2_nErr", 
+                 "day_2_kErr", "day_3_nErr", "day_3_kErr")]
+# reformat date
+subset$EndDate <- format(
+                    as.Date(subset$EndDate, format="%m/%d/%y"),
+                    "%m/%d/%y")
+# rename columns
+names(subset) <- c("forecastDate", "forecaster", "product",
+                   "1_normal", "1_kogd", "2_normal", 
+                   "2_kogd", "3_normal", "3_kogd")
+
+# tidy 
+tidy <- subset %>% 
+  gather("1_normal", "1_kogd", "2_normal", "2_kogd", 
+         "3_normal", "3_kogd", 
+         key = "dayloc", value = "error") %>% 
+  separate("dayloc", c("day", "location")) %>% 
+  mutate(order = as.integer(factor(forecastDate))) %>% 
+  mutate(tDate = as.integer( difftime(mdy(forecastDate), 
+                                      mdy("07-20-2015"), units="days")) )
+
+tidy$product <- recode(tidy$product, "SD" = "MNSD")
+#tidy$validDate <- format(as.Date(tidy$forecastDate, format="%m/%d/%y") + (as.integer(tidy$day) - 1), "%m/%d/%y")
+
+# drop NA
+tidy <- tidy %>% drop_na(error) 
+#%>% select(forecastDate, validDate, everything()) 
+
+# calculate absolute error
+tidy$absError <- abs(tidy$error)
+
+# calculate z-score
+tidy$z_error <- (tidy$absError-mean(tidy$absError))/var(tidy$absError)
+
+# create alt coding (by week)
+tidy$week <- ((tidy$order-1) %/% 3)+1
+
+# write to CSV
+# tidy %>% select(forecaster, forecastDate, order, tDate, week, everything()) %>% write.csv(file = "ForecastingFormatted.csv", row.names=FALSE)
+```
+
+## Mixed Model
+#### Setup
+```{r mixed-model.setup, echo=TRUE}
+# set up factors
+pilotData <- tidy
+pilotData$forecaster <- factor(pilotData$forecaster) %>% relevel("5")
+pilotData$day <- factor(as.integer(pilotData$day),levels=1:3,ordered=T)
+pilotData$location <- factor(pilotData$location)
+pilotData$week <- factor(pilotData$week) %>% relevel("1")
+
+# drop outliers > 2SD
+pilotData_2SD <- pilotData %>% filter(abs(z_error) < 2)
+```
+### Model
+```{r mixed-model.model, echo=TRUE, code_folding=show}
+model = lmer(absError ~ week*day + location + (1|forecaster),
+               data=pilotData_2SD, REML=FALSE )
+```
+```{r mixed-model.summary, echo=TRUE}
+coefs <- data.frame(coef(summary(model)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+Visual inspection of the residuals indicates a right-skewed distribuition that does violate the MLM model assumption of normality of the residuals. While MLMs are generally robust to violations of normality ([Verbeke and Molenberghs, 2000](https://link.springer.com/book/10.1007/b98969)), this fact, combined with our small number of subjects, suggests we should be cautious in interpeting inferences. 
+
+```{r mixed-model.assumptions, echo=TRUE, code_folding=show}
+# residual plot
+plot(model)
+
+model_r = resid(model)
+# QQ plot
+qqnorm(model_r)
+qqline(model_r, col = "blue")
+```
+
+### Main Effect Means
+```{r mixed-model.main-effect.product, echo=TRUE}
+# by week
+table_week <- 
+  ddply(pilotData_2SD,~week,summarise,mean=mean(absError),sd=sd(absError))
+
+# generate table
+knitr::kable(table_week, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+```{r mixed-model.main-effect.day, echo=TRUE}
+# by day
+table_day <- 
+  ddply(pilotData_2SD,~day,summarise,mean=mean(absError),sd=sd(absError))
+
+# generate table
+knitr::kable(table_day, "html")%>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+### Product:Day Interaction
+```{r mixed-model.interaction, echo=TRUE}
+# calculate means for week*day interaction plots
+plot_data <- ddply(pilotData_2SD,
+                  .(week,day),
+                  summarise,
+                  mean=mean(absError),
+                  sd=sd(absError), 
+                  error95CI=qnorm(0.975)*sd(absError)/sqrt(length(absError))  )
+
+# plot
+plot <- ggplot(plot_data, aes(x=day, y=mean, fill=week, group=week)) +
+  geom_bar(stat="identity", position=position_dodge(.82), width=0.8, color="#FEFEFE") +
+  scale_fill_manual(name="",values=c('#57B6D3', '#57C980', '#E5895C', '#8773D8', '#71D1D3'), labels=c("1" = "Week 1 (baseline)", "2" = "Week 2 (plume)", "3" = "Week 3 (MNSD)", "4" = "Week 4 (spaghetti)", "5" = "Week 5 (baseline)")) + 
+  geom_errorbar(aes(ymin=mean-error95CI, ymax=mean+error95CI), width=.34, position=position_dodge(.82), color="#3F3F3F")+
+  scale_y_continuous(name ="Forecast Error")+
+  scale_x_discrete(name ="Day of Forecast", labels=c("1" = "Day 1", "2" = "Day 2", "3" = "Day 3"), limits=c("1","2","3"))+
+  theme(legend.position="bottom")
+print(plot)
+```
+
+### Post-hoc Model: Day 1
+```{r post-hoc.day1, echo=TRUE}
+# post hoc -- day 1
+pilotDay1 <- filter(pilotData_2SD, day=="1")
+model_1D1 <- lmer(absError ~ week + location + (1|forecaster), data=pilotDay1, REML=FALSE)
+
+coefs <- data.frame(coef(summary(model_1D1)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Post-hoc Model: Day 2
+```{r post-hoc.day2, echo=TRUE}
+# post hoc -- day 2
+pilotDay2 <- filter(pilotData_2SD, day=="2")
+model_1D2 <- lmer(absError ~ week + location + (1|forecaster), data=pilotDay2, REML=FALSE)
+
+coefs <- data.frame(coef(summary(model_1D2)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Post-hoc Model: Day 3
+```{r post-hoc.day3, echo=TRUE}
+# post hoc -- day 3
+pilotDay3 <- filter(pilotData_2SD, day=="3")
+model_1D3 <- lmer(absError ~ week + location + (1|forecaster), data=pilotDay3, REML=FALSE)
+
+coefs <- data.frame(coef(summary(model_1D3)))
+knitr::kable(coefs, "html")%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
